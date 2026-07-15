@@ -248,3 +248,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Theme management
+window.toggleTheme = function() {
+    const body = document.body;
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark');
+    }
+};
+
+// Startup Overlay Animation
+document.addEventListener('DOMContentLoaded', () => {
+    // Initially disable scrolling on body
+    document.body.style.overflow = 'hidden';
+
+    const overlay = document.getElementById('startup-overlay');
+    const spinner = document.getElementById('startup-spinner');
+    const startupLogo = document.getElementById('startup-logo-group');
+    const headerLogo = document.getElementById('header-logo-group');
+    const pageContainer = document.querySelector('.page-container');
+    const subtitle = document.querySelector('.page-header .subtitle');
+
+    if (!overlay || !spinner || !startupLogo || !headerLogo) {
+        // Fallback if elements don't exist
+        document.body.style.overflow = '';
+        return;
+    }
+
+    // Wait 1 second for the spinner animation
+    setTimeout(() => {
+        // Fade out the spinner
+        spinner.style.opacity = '0';
+
+        // Wait 300ms for spinner fade transition to complete
+        setTimeout(() => {
+            // Make header logo block layout ready but transparent
+            headerLogo.style.opacity = '0';
+            headerLogo.style.visibility = 'visible';
+
+            // Get coordinates
+            const rectHeader = headerLogo.getBoundingClientRect();
+            const rectStartup = startupLogo.getBoundingClientRect();
+
+            const scale = rectHeader.width / rectStartup.width;
+
+            const headerCenterX = rectHeader.left + rectHeader.width / 2;
+            const headerCenterY = rectHeader.top + rectHeader.height / 2;
+
+            const startupCenterX = rectStartup.left + rectStartup.width / 2;
+            const startupCenterY = rectStartup.top + rectStartup.height / 2;
+
+            const xDiff = headerCenterX - startupCenterX;
+            const yDiff = headerCenterY - startupCenterY;
+
+            // Apply morph transform to center logo
+            startupLogo.style.transformOrigin = 'center center';
+            startupLogo.style.transform = `translate(${xDiff}px, ${yDiff}px) scale(${scale})`;
+
+            // Wait for morph animation (800ms)
+            setTimeout(() => {
+                // Show actual header logo
+                headerLogo.style.opacity = '1';
+                
+                // Fade out overlay
+                overlay.style.opacity = '0';
+
+                // Fade in the rest of the webapp
+                if (pageContainer) pageContainer.style.opacity = '1';
+                if (subtitle) subtitle.style.opacity = '1';
+
+                // Restore scrolling
+                document.body.style.overflow = '';
+
+                // Completely hide overlay after fade out
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 400);
+            }, 800);
+        }, 300);
+    }, 1000);
+});
