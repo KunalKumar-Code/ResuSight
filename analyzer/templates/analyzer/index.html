@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuSight - ATS Resume Auditor</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Marked.js for streaming markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'analyzer/styles.css' %}">
+</head>
+<body>
+    <!-- Background Decoration Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i data-lucide="eye" class="logo-icon"></i>
+                <span class="logo-text">Resu<span>Sight</span></span>
+            </div>
+            <p class="tagline">Next-Gen ATS Compatibility & Resume Optimization Engine</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            
+            <!-- Left Side: Form Controls -->
+            <section class="control-panel card">
+                <h2 class="section-title"><i data-lucide="sliders" class="icon-inline"></i> Audit Parameters</h2>
+                
+                <form id="audit-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Job Role Input -->
+                    <div class="form-group">
+                        <label for="job_role">Target Job Role <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i data-lucide="briefcase" class="input-icon"></i>
+                            <input type="text" id="job_role" name="job_role" placeholder="e.g., Senior Full-Stack Engineer" required>
+                        </div>
+                    </div>
+
+                    <!-- Job Description Input -->
+                    <div class="form-group">
+                        <label for="job_description">Job Description (Optional)</label>
+                        <div class="textarea-wrapper">
+                            <textarea id="job_description" name="job_description" placeholder="Paste the job description details here to analyze matching keywords and responsibilities..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Resume Upload Choice -->
+                    <div class="form-group">
+                        <label>Resume Source <span class="required">*</span></label>
+                        <div class="tabs">
+                            <button type="button" class="tab-btn active" data-tab="upload-tab">
+                                <i data-lucide="file-up"></i> Upload PDF / Text
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="paste-tab">
+                                <i data-lucide="clipboard-text"></i> Paste Resume Text
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 1: Upload File -->
+                    <div id="upload-tab" class="tab-content active">
+                        <div class="drag-zone" id="drag-zone">
+                            <input type="file" id="resume_file" name="resume_file" accept=".pdf,.txt" class="file-input">
+                            <div class="drag-zone-content">
+                                <i data-lucide="cloud-upload" class="upload-icon"></i>
+                                <p class="drag-title">Drag & drop your resume file</p>
+                                <p class="drag-subtitle">Supports PDF and TXT formats (Max 5MB)</p>
+                                <div class="file-selected-indicator" id="file-indicator">
+                                    <i data-lucide="file-check" class="success-icon"></i>
+                                    <span id="file-name-display">filename.pdf</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Paste Text -->
+                    <div id="paste-tab" class="tab-content">
+                        <div class="form-group">
+                            <textarea id="resume_text" name="resume_text" class="resume-textarea" placeholder="Paste your plain resume text here..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span class="btn-text">Audit Resume</span>
+                        <i data-lucide="sparkles" class="btn-icon"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Side: Results Display -->
+            <section class="results-panel card">
+                
+                <!-- Initial State: Awaiting Upload -->
+                <div class="state-container" id="state-idle">
+                    <div class="idle-graphic">
+                        <div class="radar-ping"></div>
+                        <i data-lucide="shield-check" class="idle-icon"></i>
+                    </div>
+                    <h3>Ready for Optimization</h3>
+                    <p>Enter the job parameters and submit your resume. Our AI engine will inspect parsing compatibility, keyword matches, visual spacing, and clarity metrics in real-time.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="state-container hidden" id="state-loading">
+                    <div class="spinner-wrapper">
+                        <div class="glowing-spinner"></div>
+                    </div>
+                    <h3>Auditing Resume...</h3>
+                    <p id="loading-message">Reading document elements & matching industry benchmarks...</p>
+                </div>
+
+                <!-- Active Report Container -->
+                <div class="report-container hidden" id="report-container">
+                    
+                    <!-- Header with overall score -->
+                    <div class="report-header">
+                        <div class="overall-score-container">
+                            <div class="svg-ring-wrapper">
+                                <svg class="score-ring" viewBox="0 0 100 100">
+                                    <circle class="score-ring-bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="score-ring-fill" cx="50" cy="50" r="45" id="overall-ring"></circle>
+                                </svg>
+                                <div class="score-value" id="overall-value">0</div>
+                            </div>
+                            <div class="score-meta">
+                                <span class="score-label">Overall Match Score</span>
+                                <span class="score-grade" id="overall-grade">Evaluating...</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls (e.g. print) -->
+                        <div class="report-actions">
+                            <button type="button" class="action-btn" onclick="window.print()">
+                                <i data-lucide="printer"></i> Print Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criteria Scores Grid -->
+                    <div class="criteria-grid">
+                        <!-- ATS Parsing -->
+                        <div class="criteria-card" id="card-ats">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="cpu" class="icon-inline"></i> ATS Parsing</span>
+                                <span class="criteria-score" id="score-ats">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-ats" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sectioning & Formatting -->
+                        <div class="criteria-card" id="card-sectioning">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="layout" class="icon-inline"></i> Formatting</span>
+                                <span class="criteria-score" id="score-sectioning">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-sectioning" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Keywords & Skills -->
+                        <div class="criteria-card" id="card-keywords">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="key-round" class="icon-inline"></i> Keywords & Skills</span>
+                                <span class="criteria-score" id="score-keywords">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-keywords" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Clarity & Style -->
+                        <div class="criteria-card" id="card-clarity">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="message-square" class="icon-inline"></i> Clarity & Style</span>
+                                <span class="criteria-score" id="score-clarity">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-clarity" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Education & Certs -->
+                        <div class="criteria-card" id="card-education">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="graduation-cap" class="icon-inline"></i> Education & Certs</span>
+                                <span class="criteria-score" id="score-education">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-education" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Links & Contact -->
+                        <div class="criteria-card" id="card-links">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="link" class="icon-inline"></i> Contact & Links</span>
+                                <span class="criteria-score" id="score-links">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-links" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Design & Layout -->
+                        <div class="criteria-card" id="card-design">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="palette" class="icon-inline"></i> Design & Layout</span>
+                                <span class="criteria-score" id="score-design">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-design" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Credibility -->
+                        <div class="criteria-card" id="card-credibility">
+                            <div class="criteria-header">
+                                <span class="criteria-title"><i data-lucide="award" class="icon-inline"></i> Credibility & Dates</span>
+                                <span class="criteria-score" id="score-credibility">--</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="bar-credibility" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streaming Analysis Content -->
+                    <div class="detailed-report-section">
+                        <h3 class="report-section-title"><i data-lucide="file-text" class="icon-inline"></i> Detailed Evaluation & Suggestions</h3>
+                        <div class="streaming-content markdown-body" id="detailed-feedback">
+                            <!-- Streamed content rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- SVG Gradient Definitions -->
+    <svg width="0" height="0">
+        <defs>
+            <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8b5cf6" /> <!-- Violet -->
+                <stop offset="100%" stop-color="#06b6d4" /> <!-- Cyan -->
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Custom Script -->
+    <script src="{% static 'analyzer/app.js' %}"></script>
+</body>
+</html>

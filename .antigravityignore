@@ -1,0 +1,36 @@
+# === Tier 1: Security (Never let these reach the AI) ===
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.p12
+secrets/
+credentials.json
+service-account-*.json
+firebase-adminsdk-*.json
+**/google-services.json
+
+# === Tier 2: Performance (Save tokens) ===
+node_modules/
+.venv/
+venv/
+__pycache__/
+dist/
+build/
+.next/
+out/
+target/
+*.log
+*.lock
+package-lock.json
+coverage/
+.cache/
+
+# === Tier 3: Signal Quality (Reduce noise) ===
+_backup/
+_archive/
+**/legacy/
+*.csv
+*.parquet   
