@@ -3,6 +3,7 @@ from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
 import io
+from datetime import datetime
 import pdfplumber
 from google import genai
 from google.genai import types
@@ -62,6 +63,7 @@ Evaluate general aesthetics, cohesive color theory, utilization of whitespace, a
 
 ## 9. Credibility & Detail (Score: <score>/100)
 Investigate layout chronological consistency, date formatting schemas, hidden career gaps, and the historical verifiability of technical or operational claims.
+*CRITICAL DATE CONTEXT:* Treat the reference current year provided in the prompt as the actual present day. Do not flag dates prior to or including that reference year as future dates.
 
 Maintain a commanding, highly authoritative, yet encouraging tone throughout the critique. Render headings, metrics, and data sets using precise Markdown tags to ensure perfect UI streaming compatibility. Do not include raw HTML syntax tags.
 """
@@ -117,7 +119,13 @@ def analyze(request):
     if not resume_text:
         return JsonResponse({'error': 'Resume content is required. Please upload a file or paste your resume text.'}, status=400)
 
+    # Calculate the dynamic current year automatically
+    current_year = datetime.now().year
+
     prompt = f"""Analyze the following resume details for the role of '{job_role}'.
+
+=== CURRENT TIMEFRAME CONTEXT ===
+The current absolute reference year is: {current_year}. Any date equal to or before this year represents the past. Do not flag milestones or experiences in or before {current_year} as future timeline paradoxes.
 
 === JOB ROLE ===
 {job_role}
