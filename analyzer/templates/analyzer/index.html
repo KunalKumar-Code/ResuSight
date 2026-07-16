@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'analyzer/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'analyzer/styles.css' %}?v=1.2">
     
     <!-- Theme initialization to prevent layout flash -->
     <script>
@@ -185,9 +185,14 @@
                                 <span class="grade" id="overall-grade">Evaluating...</span>
                             </div>
                         </div>
-                        <button type="button" class="btn-secondary" onclick="window.print()">
-                            <i data-lucide="printer"></i> Print Report
-                        </button>
+                        <div class="report-actions">
+                            <button type="button" class="btn-secondary btn-back" id="back-btn">
+                                <i data-lucide="arrow-left"></i> Go Back
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="window.print()">
+                                <i data-lucide="printer"></i> Print Report
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Scores Grid -->
@@ -305,6 +310,6 @@
   </div>
 
   <!-- Custom Script -->
-  <script src="{% static 'analyzer/app.js' %}"></script>
+  <script src="{% static 'analyzer/app.js' %}?v=1.2"></script>
 </body>
 </html>
