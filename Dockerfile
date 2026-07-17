@@ -19,11 +19,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . /app/
 
-# Run database migrations
-RUN python manage.py migrate
+# Make entrypoint.sh executable
+RUN chmod +x /app/entrypoint.sh
 
 # Expose application port
 EXPOSE 8000
 
-# Start Django development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Set entrypoint and default command
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "resusight_project.wsgi:application", "--bind", "0.0.0.0:8000"]

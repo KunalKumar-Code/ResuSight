@@ -125,3 +125,7 @@ dmypy.json
 
 # Additional
 .vscode/
+
+# Keys and secrets
+*.pem
+
