@@ -22,7 +22,7 @@
     --color-success: #1ea64a;
     
     /* Typography Family */
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Geist', sans-serif;
     
     /* Border Radii */
     --rounded-xs: 2px;
@@ -134,7 +134,7 @@ body {
     transition: gap 1.25s cubic-bezier(0.16, 1, 0.3, 1);
 
     @media (min-width: 992px) {
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto minmax(0, 1fr);
         align-items: stretch; /* Stretch right results card to match left stack height exactly */
     }
 
@@ -610,6 +610,7 @@ body {
         /* Right Side: Results Panel */
         .results-panel {
             min-height: 540px;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             background-color: #000000 !important; /* Always black results card */
@@ -621,7 +622,7 @@ body {
             position: relative;
             z-index: 10; /* Render on top of collapsing parameters stack */
 
-            h3, h4, p, span:not(.criteria-card *), div:not(.criteria-card *) {
+            h3:not(.suggestions-navy-block *), h4:not(.suggestions-navy-block *), p:not(.suggestions-navy-block *), span:not(.criteria-card *):not(.suggestions-navy-block *), div:not(.criteria-card *):not(.suggestions-navy-block *) {
                 color: #ffffff !important;
             }
         }
@@ -872,29 +873,39 @@ body {
 
 /* Suggestions Navy Block */
 .suggestions-navy-block {
-    background-color: #24233F !important; /* Navy color block from design.md */
-    color: var(--color-inverse-ink);
-    border-radius: var(--rounded-lg);
+    --eval-card-bg: #f0f0f0;
+    --eval-card-text: #101010;
+    --eval-card-text-muted: #101010;
+    --eval-card-border: rgba(16, 16, 16, 0.1);
+    --eval-card-heading: #101010;
+    --eval-card-accent: #6b21a8;
+    --eval-card-blockquote-bg: rgba(0, 0, 0, 0.05);
+    --eval-card-link: #6b21a8;
+    --eval-card-link-hover: #000000;
+
+    background-color: var(--eval-card-bg) !important;
+    color: var(--eval-card-text) !important;
+    border-radius: var(--rounded-md);
     padding: var(--spacing-xxl); /* 48px padding from design.md */
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25); /* Modal elevation from design.md */
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--eval-card-border);
 
     .title-wrap {
         display: flex;
         align-items: center;
         gap: var(--spacing-sm);
-        border-bottom: 1px solid rgba(255,255,255,0.15);
+        border-bottom: 1px solid var(--eval-card-border);
         padding-bottom: var(--spacing-xs);
 
         svg {
             width: 20px;
             height: 20px;
-            color: var(--color-block-lilac);
+            color: var(--eval-card-accent) !important;
         }
 
         h4 {
@@ -902,6 +913,7 @@ body {
             font-weight: 540; /* Headline weight from design.md */
             line-height: 1.35;
             letter-spacing: -0.26px;
+            color: var(--eval-card-heading) !important;
         }
     }
 
@@ -909,24 +921,37 @@ body {
         font-size: 18px; /* body size from design.md */
         line-height: 1.45;
         font-weight: 320; /* body weight from design.md */
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--eval-card-text-muted) !important;
         letter-spacing: -0.26px;
 
+        a {
+            color: var(--eval-card-link) !important;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--eval-card-link);
+            transition: var(--transition-smooth);
+            font-weight: 500;
+            
+            &:hover {
+                color: var(--eval-card-link-hover) !important;
+                border-bottom: 1px solid var(--eval-card-link-hover);
+            }
+        }
+
         h2, h3 {
-            color: var(--color-inverse-ink);
+            color: var(--eval-card-heading) !important;
             margin: var(--spacing-md) 0 var(--spacing-xs);
             font-weight: 600;
         }
 
         h2 {
             font-size: 22px; /* proportional heading */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--eval-card-border);
             padding-bottom: var(--spacing-xxs);
         }
 
         h3 {
             font-size: 19px;
-            color: var(--color-block-lilac);
+            color: var(--eval-card-accent) !important;
         }
 
         p {
@@ -938,39 +963,36 @@ body {
             padding-left: var(--spacing-md);
             li {
                 margin-bottom: var(--spacing-xxs);
-                &::marker {
-                    color: var(--color-block-lime);
-                }
             }
         }
 
         strong {
-            color: var(--color-inverse-ink);
+            color: var(--eval-card-heading) !important;
             font-weight: 600;
         }
 
         blockquote {
-            border-left: 3px solid var(--color-block-lilac);
-            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--eval-card-accent) !important;
+            background: var(--eval-card-blockquote-bg) !important;
             padding: var(--spacing-xs) var(--spacing-sm);
             margin: var(--spacing-md) 0;
             border-radius: 0 var(--rounded-md) var(--rounded-md) 0;
-            color: rgba(255,255,255,0.9);
+            color: var(--eval-card-text-muted) !important;
             font-style: italic;
         }
 
         code {
             font-family: var(--font-sans); /* Use sans-serif as requested */
             font-size: 14px;
-            background: rgba(0,0,0,0.3);
+            background: var(--eval-card-blockquote-bg);
             padding: 2px 6px;
             border-radius: var(--rounded-xs);
-            color: var(--color-block-pink);
+            color: var(--eval-card-link);
         }
 
         pre {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--eval-card-blockquote-bg);
+            border: 1px solid var(--eval-card-border);
             border-radius: var(--rounded-md);
             padding: var(--spacing-sm);
             margin: var(--spacing-md) 0;
@@ -979,7 +1001,7 @@ body {
             code {
                 background: transparent;
                 padding: 0;
-                color: rgba(255,255,255,0.9);
+                color: var(--eval-card-text-muted);
             }
         }
 
@@ -987,15 +1009,134 @@ body {
             width: 100%;
             border-collapse: collapse;
             margin: var(--spacing-md) 0;
+            border-radius: var(--rounded-md);
+            overflow: hidden;
+            border: 1px solid var(--eval-card-border);
             
             th, td {
-                padding: 8px 12px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 10px 14px;
+                border: 1px solid var(--eval-card-border);
                 text-align: left;
+                font-size: 15px;
             }
             th {
-                background: rgba(255,255,255,0.05);
-                color: var(--color-inverse-ink);
+                background: var(--eval-card-blockquote-bg);
+                color: var(--eval-card-heading) !important;
+                font-weight: 600;
+            }
+            td {
+                background: rgba(0, 0, 0, 0.01);
+            }
+            tr:nth-child(even) td {
+                background: rgba(0, 0, 0, 0.02);
+            }
+        }
+
+        /* Colored section blocks */
+        .feedback-section {
+            --section-text-color: var(--section-dark-color, #121212);
+            --section-ul-marker: var(--section-dark-color, #121212);
+            --section-ol-marker: var(--section-dark-color, #121212);
+            --section-border-color: rgba(0, 0, 0, 0.08);
+            background: rgba(0, 0, 0, 0.015);
+            border: 1px solid var(--section-border-color);
+            border-radius: var(--rounded-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-smooth);
+
+            .section-icon {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: var(--spacing-xs);
+                color: var(--section-text-color) !important;
+            }
+
+            /* Overrides for section-specific elements */
+            h2 {
+                color: var(--section-text-color) !important;
+                border-bottom: 1px solid var(--section-border-color) !important;
+                margin-top: 0 !important;
+                padding-bottom: var(--spacing-xs) !important;
+                font-size: 22px !important;
+                display: flex;
+                align-items: center;
+            }
+
+            h3 {
+                color: var(--section-text-color) !important;
+            }
+
+            ul li::marker {
+                color: var(--section-ul-marker) !important;
+            }
+
+            ol li::marker {
+                color: var(--section-ol-marker) !important;
+                font-weight: bold;
+            }
+
+            /* Section color and background gradient definitions */
+            &.section-1 {
+                --section-color: #c5b0f4; /* Lilac */
+                --section-accent: #e9d5ff;
+                --section-dark-color: #6b21a8;
+                background: linear-gradient(135deg, rgba(197, 176, 244, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-2 {
+                --section-color: #c8e6cd; /* Mint */
+                --section-accent: #a7f3d0;
+                --section-dark-color: #16a34a;
+                background: linear-gradient(135deg, rgba(200, 230, 205, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-3 {
+                --section-color: #efd4d4; /* Pink */
+                --section-accent: #fecdd3;
+                --section-dark-color: #dc2626;
+                background: linear-gradient(135deg, rgba(239, 212, 212, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-4 {
+                --section-color: #dceeb1; /* Lime */
+                --section-accent: #e2f8a1;
+                --section-dark-color: #65a30d;
+                background: linear-gradient(135deg, rgba(220, 238, 177, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-5 {
+                --section-color: #f3c9b6; /* Coral */
+                --section-accent: #ffedd5;
+                --section-dark-color: #ea580c;
+                background: linear-gradient(135deg, rgba(243, 201, 182, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-6 {
+                --section-color: #f4ecd6; /* Cream */
+                --section-accent: #fef3c7;
+                --section-dark-color: #b45309;
+                background: linear-gradient(135deg, rgba(244, 236, 214, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-7 {
+                --section-color: #c5b0f4; /* Lilac */
+                --section-accent: #e9d5ff;
+                --section-dark-color: #6b21a8;
+                background: linear-gradient(135deg, rgba(197, 176, 244, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-8 {
+                --section-color: #c8e6cd; /* Mint */
+                --section-accent: #a7f3d0;
+                --section-dark-color: #16a34a;
+                background: linear-gradient(135deg, rgba(200, 230, 205, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-9 {
+                --section-color: #efd4d4; /* Pink */
+                --section-accent: #fecdd3;
+                --section-dark-color: #dc2626;
+                background: linear-gradient(135deg, rgba(239, 212, 212, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-other {
+                --section-color: #ffffff;
+                --section-accent: var(--color-block-lilac);
+                --section-dark-color: #121212;
             }
         }
     }
@@ -1083,6 +1224,43 @@ body.dark-theme {
         }
         .logo-dark-img {
             display: block !important;
+        }
+    }
+
+    .suggestions-navy-block {
+        --eval-card-bg: #121212;
+        --eval-card-text: #ffffff;
+        --eval-card-text-muted: rgba(255, 255, 255, 0.9);
+        --eval-card-border: rgba(255, 255, 255, 0.08);
+        --eval-card-heading: var(--color-inverse-ink);
+        --eval-card-accent: var(--color-block-lilac);
+        --eval-card-blockquote-bg: rgba(255, 255, 255, 0.05);
+        --eval-card-link: var(--color-block-lilac);
+        --eval-card-link-hover: var(--color-inverse-ink);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+        .streamed-output {
+            table {
+                td {
+                    background: rgba(255, 255, 255, 0.02);
+                }
+                tr:nth-child(even) td {
+                    background: rgba(255, 255, 255, 0.04);
+                }
+            }
+
+            .feedback-section {
+                --section-text-color: var(--section-color, var(--color-inverse-ink));
+                --section-ul-marker: var(--section-accent, var(--color-block-lime));
+                --section-ol-marker: var(--section-color, var(--color-block-lime));
+                --section-border-color: rgba(255, 255, 255, 0.08);
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid var(--section-border-color);
+
+                .section-icon {
+                    color: var(--section-color, #ffffff) !important;
+                }
+            }
         }
     }
 }
