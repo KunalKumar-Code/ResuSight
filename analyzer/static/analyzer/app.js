@@ -172,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     if (markdownContent.trim()) {
-                        detailedFeedback.innerHTML = marked.parse(markdownContent);
+                        detailedFeedback.innerHTML = renderMarkdownSections(markdownContent);
+                        // Re-initialize Lucide Icons for the newly injected section icons
+                        lucide.createIcons();
                     }
                 }
 
@@ -290,6 +292,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 barFill.style.backgroundColor = "";
             }
         });
+    }
+
+    function getSectionIcon(sectionNum) {
+        switch (sectionNum) {
+            case 1: return '<i data-lucide="sparkles" class="section-icon"></i>';
+            case 2: return '<i data-lucide="cpu" class="section-icon"></i>';
+            case 3: return '<i data-lucide="layout" class="section-icon"></i>';
+            case 4: return '<i data-lucide="key-round" class="section-icon"></i>';
+            case 5: return '<i data-lucide="message-square" class="section-icon"></i>';
+            case 6: return '<i data-lucide="graduation-cap" class="section-icon"></i>';
+            case 7: return '<i data-lucide="link" class="section-icon"></i>';
+            case 8: return '<i data-lucide="palette" class="section-icon"></i>';
+            case 9: return '<i data-lucide="shield-check" class="section-icon"></i>';
+            default: return '';
+        }
+    }
+
+    function renderMarkdownSections(content) {
+        if (!content) return "";
+        
+        // Split content by headings of format "## [1-9]. "
+        const sections = content.split(/(?=## [1-9]\. )/g);
+        
+        let htmlOutput = "";
+        
+        sections.forEach(section => {
+            const trimmed = section.trim();
+            if (!trimmed) return;
+            
+            // Find which section number this is
+            const match = trimmed.match(/^## ([1-9])\./);
+            let sectionNum = 0;
+            if (match) {
+                sectionNum = parseInt(match[1], 10);
+            }
+            
+            // Render markdown to HTML
+            let parsedHtml = marked.parse(section);
+            
+            // Inject Lucide icon into the h2 element if found
+            if (sectionNum >= 1 && sectionNum <= 9) {
+                const iconHtml = getSectionIcon(sectionNum);
+                parsedHtml = parsedHtml.replace('<h2>', `<h2>${iconHtml}`);
+                htmlOutput += `<div class="feedback-section section-${sectionNum}">${parsedHtml}</div>`;
+            } else {
+                htmlOutput += `<div class="feedback-section section-other">${parsedHtml}</div>`;
+            }
+        });
+        
+        return htmlOutput;
     }
 });
 

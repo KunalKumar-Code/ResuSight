@@ -912,6 +912,19 @@ body {
         color: rgba(255, 255, 255, 0.9);
         letter-spacing: -0.26px;
 
+        a {
+            color: var(--color-block-lilac);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--color-block-lilac);
+            transition: var(--transition-smooth);
+            font-weight: 500;
+            
+            &:hover {
+                color: var(--color-inverse-ink);
+                border-bottom: 1px solid var(--color-inverse-ink);
+            }
+        }
+
         h2, h3 {
             color: var(--color-inverse-ink);
             margin: var(--spacing-md) 0 var(--spacing-xs);
@@ -987,15 +1000,127 @@ body {
             width: 100%;
             border-collapse: collapse;
             margin: var(--spacing-md) 0;
+            border-radius: var(--rounded-md);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             
             th, td {
-                padding: 8px 12px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 10px 14px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
                 text-align: left;
+                font-size: 15px;
             }
             th {
-                background: rgba(255,255,255,0.05);
+                background: rgba(255, 255, 255, 0.08);
                 color: var(--color-inverse-ink);
+                font-weight: 600;
+            }
+            td {
+                background: rgba(255, 255, 255, 0.02);
+            }
+            tr:nth-child(even) td {
+                background: rgba(255, 255, 255, 0.04);
+            }
+        }
+
+        /* Colored section blocks */
+        .feedback-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 5px solid var(--section-color, #ffffff);
+            border-radius: var(--rounded-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-smooth);
+            
+            &:hover {
+                background: rgba(255, 255, 255, 0.04);
+                border-color: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .section-icon {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: var(--spacing-xs);
+                color: var(--section-color, #ffffff);
+            }
+
+            /* Overrides for section-specific elements */
+            h2 {
+                color: var(--section-color, var(--color-inverse-ink)) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                margin-top: 0 !important;
+                padding-bottom: var(--spacing-xs) !important;
+                font-size: 22px !important;
+                display: flex;
+                align-items: center;
+            }
+
+            h3 {
+                color: var(--section-accent, var(--color-block-lilac)) !important;
+            }
+
+            ul li::marker {
+                color: var(--section-accent, var(--color-block-lime)) !important;
+            }
+
+            ol li::marker {
+                color: var(--section-color, var(--color-block-lime)) !important;
+                font-weight: bold;
+            }
+
+            /* Section color and background gradient definitions */
+            &.section-1 {
+                --section-color: #c5b0f4; /* Lilac */
+                --section-accent: #e9d5ff;
+                background: linear-gradient(135deg, rgba(197, 176, 244, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-2 {
+                --section-color: #c8e6cd; /* Mint */
+                --section-accent: #a7f3d0;
+                background: linear-gradient(135deg, rgba(200, 230, 205, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-3 {
+                --section-color: #efd4d4; /* Pink */
+                --section-accent: #fecdd3;
+                background: linear-gradient(135deg, rgba(239, 212, 212, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-4 {
+                --section-color: #dceeb1; /* Lime */
+                --section-accent: #e2f8a1;
+                background: linear-gradient(135deg, rgba(220, 238, 177, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-5 {
+                --section-color: #f3c9b6; /* Coral */
+                --section-accent: #ffedd5;
+                background: linear-gradient(135deg, rgba(243, 201, 182, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-6 {
+                --section-color: #f4ecd6; /* Cream */
+                --section-accent: #fef3c7;
+                background: linear-gradient(135deg, rgba(244, 236, 214, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-7 {
+                --section-color: #c5b0f4; /* Lilac */
+                --section-accent: #e9d5ff;
+                background: linear-gradient(135deg, rgba(197, 176, 244, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-8 {
+                --section-color: #c8e6cd; /* Mint */
+                --section-accent: #a7f3d0;
+                background: linear-gradient(135deg, rgba(200, 230, 205, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-9 {
+                --section-color: #efd4d4; /* Pink */
+                --section-accent: #fecdd3;
+                background: linear-gradient(135deg, rgba(239, 212, 212, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            }
+            &.section-other {
+                --section-color: #ffffff;
+                --section-accent: var(--color-block-lilac);
             }
         }
     }

@@ -50,13 +50,13 @@ Perform a rigorous comparison between the resume text and standard industry keyw
 ## 5. Clarity, Style & Impact (Score: <score>/100)
 Assess linguistic strength, professional tone, active verb usage, and empirical quantification (metrics and business outcomes).
 - Locate weak, passive, or responsibility-focused phrases (e.g., "Responsible for maintaining servers").
-- **STAR Optimization:** Provide a side-by-side "Before & After" conversion engine using the STAR framework (Situation, Task, Action, Result). Show exactly how to turn a flat task statement into a metric-driven achievement statement.
+- **STAR Optimization:** Provide a side-by-side "Before" and "After" comparison using a Markdown table format. The table must contain column headers (e.g., `Before (Flat Task)` and `After (STAR Optimized with Metrics)`) and show exactly how to turn a flat task statement into a metric-driven achievement statement using the STAR framework (Situation, Task, Action, Result).
 
 ## 6. Education & Certifications (Score: <score>/100)
 Audit the clarity of academic degrees, graduation timelines, institutional branding, and professional industry certifications. 
 
 ## 7. Links & Contact Info (Score: <score>/100)
-Verify presence and structural professionalism of email, phone, location string, LinkedIn, GitHub, and portfolio URLs. Flag any missing hyperlinked footprints or unprofessional handles.
+Verify presence and structural professionalism of email, phone, location string, LinkedIn, GitHub, and portfolio URLs. Flag any missing hyperlinked footprints or unprofessional handles. Provide standard hyperlink templates/examples (e.g., [LinkedIn Profile](https://linkedin.com/in/username)) in Markdown format for the user to follow.
 
 ## 8. Design & Presentation (Score: <score>/100)
 Evaluate general aesthetics, cohesive color theory, utilization of whitespace, and margin widths. Provide tips to transition the visual asset into a premium executive-grade layout.
@@ -65,7 +65,7 @@ Evaluate general aesthetics, cohesive color theory, utilization of whitespace, a
 Investigate layout chronological consistency, date formatting schemas, hidden career gaps, and the historical verifiability of technical or operational claims.
 *CRITICAL DATE CONTEXT:* Treat the reference current year provided in the prompt as the actual present day. Do not flag dates prior to or including that reference year as future dates.
 
-Maintain a commanding, highly authoritative, yet encouraging tone throughout the critique. Render headings, metrics, and data sets using precise Markdown tags to ensure perfect UI streaming compatibility. Do not include raw HTML syntax tags.
+Maintain a commanding, highly authoritative, yet encouraging tone throughout the critique. Render comparisons, data sets, and side-by-side analyses using standard Markdown tables (with columns and borders). Render all URLs and contact paths using standard Markdown hyperlinks (e.g., [Anchor Text](URL)). Do not include raw HTML syntax tags.
 """
 
 def extract_text_from_pdf(uploaded_file):
